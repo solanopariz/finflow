@@ -1,0 +1,82 @@
+// Schema do FinFlow — MySQL via Prisma
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionSource {
+  MANUAL
+  IMPORT
+  AI
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+
+  categories   Category[]
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  type         CategoryType
+  color        String        @default("#38bdf8")
+  icon         String?
+  createdAt    DateTime      @default(now())
+
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  type        CategoryType
+  amount      Decimal           @db.Decimal(12, 2)
+  description String
+  date        DateTime
+  source      TransactionSource @default(MANUAL)
+  createdAt   DateTime          @default(now())
+
+  @@index([userId, date])
+  @@index([categoryId])
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  month       String   // formato "YYYY-MM"
+  limitAmount Decimal  @db.Decimal(12, 2)
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, categoryId, month])
+  @@index([userId, month])
+}
