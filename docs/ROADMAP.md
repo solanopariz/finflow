@@ -4,12 +4,11 @@ Projeto carro-chefe do portfólio: **gestor de finanças pessoais com IA**.
 Demonstra full-stack completo (auth, API REST, banco relacional, dashboards, deploy) com
 um diferencial de IA (categorização automática + resumo mensal narrado).
 
-> Status atual: **M5 concluído** — Orçamentos & Resumo IA. Backend: CRUD de orçamentos por
-> categoria/mês com gasto realizado, percentual e status (ok/atenção/estourou), e resumo mensal
-> narrado por Claude Sonnet 4.6 a partir de dados reais agregados (`/ai/summary`, 503 sem chave).
-> Vitest: 41 testes. Front: página de Orçamentos (seletor de mês, barras de progresso com alerta,
-> CRUD) e card de resumo por IA. M0–M4 prontos. Próximo: **M6 — Polimento** (seed de demo, README
-> rico, CI, deploy, code-splitting do bundle).
+> Status atual: **M6 concluído** — Polimento. Seed de demonstração (`npm run seed`) + botão "Entrar
+> na conta de demonstração", code-splitting das rotas (bundle inicial 789kB → 335kB; Recharts em
+> chunk lazy), correção de fuso na formatação de datas, README rico (diagrama Mermaid + screenshots
+> reais) e arquivos/guia de deploy (`vercel.json`, `docs/DEPLOY.md`). Todos os marcos M0–M6 prontos;
+> resta o **deploy ao vivo** (criar contas no Vercel/Railway e seguir o guia).
 
 ## Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind; React Router; TanStack Query; Recharts;
@@ -46,7 +45,7 @@ Stretch: `Account` (múltiplas carteiras) e detecção de recorrência. Ver `ser
 - **M3 — Dashboard:** agregações no back + gráficos (Recharts). ✅
 - **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão. ✅
 - **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado. ✅
-- **M6 — Polimento:** seed de demo, README rico (prints, diagrama), testes, CI, deploy ao vivo. ← *próximo*
+- **M6 — Polimento:** seed de demo, README rico (prints, diagrama), testes, CI, deploy ao vivo. ✅ *(deploy ao vivo pendente — guia em `docs/DEPLOY.md`)*
 
 ## Verificação por marco
 - **M0:** `docker compose up` sobe o MySQL; `prisma migrate` cria o schema; client e server iniciam.

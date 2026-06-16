@@ -6,14 +6,18 @@ import { getMe, login, refresh, register } from './auth.service.js';
 
 const REFRESH_COOKIE = 'refreshToken';
 
+const isProd = env.NODE_ENV === 'production';
+
 /**
  * Opções do cookie do refresh token. `path` restrito às rotas de auth para que
- * o cookie só viaje quando necessário; `secure` apenas em produção (HTTPS).
+ * o cookie só viaje quando necessário. Em produção o front e o back ficam em
+ * domínios diferentes, então o cookie precisa de `SameSite=None` + `Secure`
+ * (HTTPS) para ser enviado em requisições cross-site; em dev, `Lax` basta.
  */
 const refreshCookieOptions: CookieOptions = {
   httpOnly: true,
-  sameSite: 'lax',
-  secure: env.NODE_ENV === 'production',
+  sameSite: isProd ? 'none' : 'lax',
+  secure: isProd,
   path: '/api/auth',
   maxAge: REFRESH_TTL_MS,
 };

@@ -1,5 +1,7 @@
 const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const dateFmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' });
+// As datas são armazenadas em UTC (meia-noite); formatar em UTC evita o
+// deslocamento de um dia/mês em fusos atrás do UTC (ex.: UTC-3).
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeZone: 'UTC' });
 
 export function formatCurrency(value: number): string {
   return currency.format(value);
@@ -14,7 +16,11 @@ export function toDateInputValue(iso: string): string {
   return new Date(iso).toISOString().slice(0, 10);
 }
 
-const monthFmt = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' });
+const monthFmt = new Intl.DateTimeFormat('pt-BR', {
+  month: 'short',
+  year: '2-digit',
+  timeZone: 'UTC',
+});
 
 /** 'YYYY-MM' → rótulo curto, ex.: 'jun/26'. */
 export function formatMonthLabel(month: string): string {

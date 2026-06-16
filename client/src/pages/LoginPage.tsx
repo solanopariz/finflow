@@ -7,10 +7,14 @@ import { ApiError } from '../lib/api.ts';
 import { useAuth } from '../lib/auth/context.ts';
 import { loginSchema, type LoginValues } from '../lib/auth/schemas.ts';
 
+const DEMO_EMAIL = 'demo@finflow.dev';
+const DEMO_PASSWORD = 'demo1234';
+
 export function LoginPage() {
   const { login, status } = useAuth();
   const navigate = useNavigate();
   const [formError, setFormError] = useState<string | null>(null);
+  const [demoLoading, setDemoLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -28,6 +32,19 @@ export function LoginPage() {
       navigate('/', { replace: true });
     } catch (err) {
       setFormError(err instanceof ApiError ? err.message : 'Não foi possível entrar');
+    }
+  }
+
+  async function enterDemo() {
+    setFormError(null);
+    setDemoLoading(true);
+    try {
+      await login(DEMO_EMAIL, DEMO_PASSWORD);
+      navigate('/', { replace: true });
+    } catch {
+      setFormError('Conta de demonstração indisponível. Rode "npm run seed" no servidor.');
+    } finally {
+      setDemoLoading(false);
     }
   }
 
@@ -59,6 +76,18 @@ export function LoginPage() {
           {isSubmitting ? 'Entrando…' : 'Entrar'}
         </button>
       </form>
+
+      <div className="mt-4">
+        <button
+          type="button"
+          onClick={enterDemo}
+          disabled={demoLoading}
+          className="w-full rounded-md border border-violet-300 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700 transition hover:bg-violet-100 disabled:opacity-60"
+        >
+          {demoLoading ? 'Entrando…' : '🚀 Entrar na conta de demonstração'}
+        </button>
+      </div>
+
       <p className="mt-4 text-center text-sm text-slate-600">
         Não tem conta?{' '}
         <Link to="/register" className="font-medium text-sky-600 hover:underline">

@@ -98,8 +98,8 @@ function DashboardContent({ data }: { data: DashboardSummary }) {
                   labelFormatter={(l: string) => formatMonthLabel(l)}
                 />
                 <Legend />
-                <Bar dataKey="income" name="Receita" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="expense" name="Despesa" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="income" name="Receita" fill="#22c55e" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="expense" name="Despesa" fill="#ef4444" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -120,6 +120,7 @@ function DashboardContent({ data }: { data: DashboardSummary }) {
                     cy="50%"
                     outerRadius={90}
                     label={(entry) => entry.name}
+                    isAnimationActive={false}
                   >
                     {data.byCategory.map((slice) => (
                       <Cell key={slice.categoryId ?? 'none'} fill={slice.color} />

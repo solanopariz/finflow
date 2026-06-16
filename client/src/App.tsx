@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from './lib/auth/context.ts';
 
@@ -60,7 +61,9 @@ export function App() {
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <Outlet />
+        <Suspense fallback={<p className="text-slate-500">Carregando…</p>}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );

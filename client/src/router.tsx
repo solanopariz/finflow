@@ -1,13 +1,27 @@
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { App } from './App.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
-import { BudgetsPage } from './pages/BudgetsPage.tsx';
-import { CategoriesPage } from './pages/CategoriesPage.tsx';
-import { DashboardPage } from './pages/DashboardPage.tsx';
-import { ImportPage } from './pages/ImportPage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage.tsx';
-import { TransactionsPage } from './pages/TransactionsPage.tsx';
+
+// Páginas protegidas em chunks separados (carregadas sob demanda). O Dashboard
+// arrasta o Recharts, então só baixa quando o usuário abre a tela.
+const DashboardPage = lazy(() =>
+  import('./pages/DashboardPage.tsx').then((m) => ({ default: m.DashboardPage })),
+);
+const TransactionsPage = lazy(() =>
+  import('./pages/TransactionsPage.tsx').then((m) => ({ default: m.TransactionsPage })),
+);
+const CategoriesPage = lazy(() =>
+  import('./pages/CategoriesPage.tsx').then((m) => ({ default: m.CategoriesPage })),
+);
+const BudgetsPage = lazy(() =>
+  import('./pages/BudgetsPage.tsx').then((m) => ({ default: m.BudgetsPage })),
+);
+const ImportPage = lazy(() =>
+  import('./pages/ImportPage.tsx').then((m) => ({ default: m.ImportPage })),
+);
 
 /**
  * Rotas públicas (login/registro) e rotas protegidas sob `ProtectedRoute`.
