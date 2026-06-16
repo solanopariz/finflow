@@ -4,9 +4,10 @@ Projeto carro-chefe do portfólio: **gestor de finanças pessoais com IA**.
 Demonstra full-stack completo (auth, API REST, banco relacional, dashboards, deploy) com
 um diferencial de IA (categorização automática + resumo mensal narrado).
 
-> Status atual: **M0 concluído** — fundação + scaffold das apps prontos: `server/` (Express+TS+Prisma,
-> camadas, health check, Vitest) e `client/` (Vite+React+TS+Tailwind, Router, TanStack Query),
-> ESLint/Prettier, Docker MySQL com migration inicial aplicada e CI (GitHub Actions). Próximo: **M1 — Auth**.
+> Status atual: **M1 concluído** — auth ponta a ponta: API de registro/login/refresh/logout/me com
+> JWT (access em memória + refresh em cookie httpOnly), middleware de proteção e validação Zod
+> (Vitest: 9 testes); no front, AuthContext com auto-refresh, telas de login/registro (RHF+Zod) e
+> rota protegida. Base M0 (scaffold, Docker MySQL, CI) já estava pronta. Próximo: **M2 — Transações & Categorias**.
 
 ## Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind; React Router; TanStack Query; Recharts;
@@ -38,8 +39,8 @@ Stretch: `Account` (múltiplas carteiras) e detecção de recorrência. Ver `ser
 
 ## Marcos (~5–6 semanas, um por vez com checkpoint)
 - **M0 — Scaffold:** `client/` + `server/`, tooling, Prisma + schema, Docker MySQL, envs, READMEs. ✅
-- **M1 — Auth ponta a ponta:** registro/login/JWT/refresh, middleware, telas + testes. ← *próximo*
-- **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem.
+- **M1 — Auth ponta a ponta:** registro/login/JWT/refresh, middleware, telas + testes. ✅
+- **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem. ← *próximo*
 - **M3 — Dashboard:** agregações no back + gráficos (Recharts).
 - **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão.
 - **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado.

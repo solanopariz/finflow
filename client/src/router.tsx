@@ -1,15 +1,25 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { App } from './App.tsx';
+import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { HomePage } from './pages/HomePage.tsx';
+import { LoginPage } from './pages/LoginPage.tsx';
+import { RegisterPage } from './pages/RegisterPage.tsx';
 
 /**
- * Roteador raiz. Novas telas (auth, transações, dashboard, ...) entram aqui
- * como rotas filhas de `App` à medida que os marcos avançam.
+ * Rotas públicas (login/registro) e rotas protegidas sob `ProtectedRoute`.
+ * Novas telas (transações, dashboard, ...) entram como filhas de `App`.
  */
 export const router = createBrowserRouter([
+  { path: '/login', element: <LoginPage /> },
+  { path: '/register', element: <RegisterPage /> },
   {
-    path: '/',
-    element: <App />,
-    children: [{ index: true, element: <HomePage /> }],
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/',
+        element: <App />,
+        children: [{ index: true, element: <HomePage /> }],
+      },
+    ],
   },
 ]);
