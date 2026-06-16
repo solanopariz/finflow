@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { getHealth } from '../lib/api.ts';
 
 /**
@@ -18,6 +19,23 @@ export function HomePage() {
         <p className="mt-1 text-slate-600">
           Gestor de finanças pessoais com IA. Fundação (M0) no ar.
         </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link
+          to="/transactions"
+          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-300 hover:shadow"
+        >
+          <h2 className="font-semibold text-slate-800">Transações →</h2>
+          <p className="mt-1 text-sm text-slate-500">Registre receitas e despesas e filtre por período.</p>
+        </Link>
+        <Link
+          to="/categories"
+          className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-sky-300 hover:shadow"
+        >
+          <h2 className="font-semibold text-slate-800">Categorias →</h2>
+          <p className="mt-1 text-sm text-slate-500">Organize seus lançamentos por categoria.</p>
+        </Link>
       </div>
 
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">

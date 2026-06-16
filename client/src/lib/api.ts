@@ -135,3 +135,118 @@ export function logoutRequest(): Promise<void> {
 export function fetchMe(): Promise<{ user: User }> {
   return apiFetch<{ user: User }>('/api/auth/me');
 }
+
+// ---------------------------------------------------------------------------
+// Categorias
+// ---------------------------------------------------------------------------
+
+export type CategoryType = 'INCOME' | 'EXPENSE';
+
+export interface Category {
+  id: string;
+  name: string;
+  type: CategoryType;
+  color: string;
+  icon: string | null;
+}
+
+export interface CategoryInput {
+  name: string;
+  type: CategoryType;
+  color: string;
+  icon?: string;
+}
+
+export async function listCategories(): Promise<Category[]> {
+  const { categories } = await apiFetch<{ categories: Category[] }>('/api/categories');
+  return categories;
+}
+
+export async function createCategory(input: CategoryInput): Promise<Category> {
+  const { category } = await apiFetch<{ category: Category }>('/api/categories', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+  return category;
+}
+
+export async function updateCategory(
+  id: string,
+  input: Partial<CategoryInput>,
+): Promise<Category> {
+  const { category } = await apiFetch<{ category: Category }>(`/api/categories/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+  return category;
+}
+
+export function deleteCategory(id: string): Promise<void> {
+  return apiFetch<void>(`/api/categories/${id}`, { method: 'DELETE' });
+}
+
+// ---------------------------------------------------------------------------
+// Transações
+// ---------------------------------------------------------------------------
+
+export interface Transaction {
+  id: string;
+  type: CategoryType;
+  amount: number;
+  description: string;
+  date: string;
+  source: string;
+  categoryId: string | null;
+  category: { id: string; name: string; color: string; icon: string | null } | null;
+  createdAt: string;
+}
+
+export interface TransactionInput {
+  type: CategoryType;
+  amount: number;
+  description: string;
+  date: string;
+  categoryId?: string | null;
+}
+
+export interface TransactionFilters {
+  type?: CategoryType;
+  categoryId?: string;
+  from?: string;
+  to?: string;
+}
+
+export async function listTransactions(filters: TransactionFilters = {}): Promise<Transaction[]> {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value) params.set(key, value);
+  }
+  const query = params.toString();
+  const { transactions } = await apiFetch<{ transactions: Transaction[] }>(
+    `/api/transactions${query ? `?${query}` : ''}`,
+  );
+  return transactions;
+}
+
+export async function createTransaction(input: TransactionInput): Promise<Transaction> {
+  const { transaction } = await apiFetch<{ transaction: Transaction }>('/api/transactions', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+  return transaction;
+}
+
+export async function updateTransaction(
+  id: string,
+  input: Partial<TransactionInput>,
+): Promise<Transaction> {
+  const { transaction } = await apiFetch<{ transaction: Transaction }>(
+    `/api/transactions/${id}`,
+    { method: 'PATCH', body: JSON.stringify(input) },
+  );
+  return transaction;
+}
+
+export function deleteTransaction(id: string): Promise<void> {
+  return apiFetch<void>(`/api/transactions/${id}`, { method: 'DELETE' });
+}

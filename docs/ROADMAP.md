@@ -4,10 +4,10 @@ Projeto carro-chefe do portfólio: **gestor de finanças pessoais com IA**.
 Demonstra full-stack completo (auth, API REST, banco relacional, dashboards, deploy) com
 um diferencial de IA (categorização automática + resumo mensal narrado).
 
-> Status atual: **M1 concluído** — auth ponta a ponta: API de registro/login/refresh/logout/me com
-> JWT (access em memória + refresh em cookie httpOnly), middleware de proteção e validação Zod
-> (Vitest: 9 testes); no front, AuthContext com auto-refresh, telas de login/registro (RHF+Zod) e
-> rota protegida. Base M0 (scaffold, Docker MySQL, CI) já estava pronta. Próximo: **M2 — Transações & Categorias**.
+> Status atual: **M2 concluído** — CRUD de Categorias e Transações ponta a ponta. Backend: rotas
+> protegidas com posse por usuário, filtros (tipo/categoria/período), validação de tipo categoria×transação
+> e amount como número (Vitest: 23 testes). Front: páginas de Categorias e Transações (TanStack Query,
+> RHF+Zod, modais, filtros) e navegação. M0/M1 já prontos. Próximo: **M3 — Dashboard**.
 
 ## Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind; React Router; TanStack Query; Recharts;
@@ -40,8 +40,8 @@ Stretch: `Account` (múltiplas carteiras) e detecção de recorrência. Ver `ser
 ## Marcos (~5–6 semanas, um por vez com checkpoint)
 - **M0 — Scaffold:** `client/` + `server/`, tooling, Prisma + schema, Docker MySQL, envs, READMEs. ✅
 - **M1 — Auth ponta a ponta:** registro/login/JWT/refresh, middleware, telas + testes. ✅
-- **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem. ← *próximo*
-- **M3 — Dashboard:** agregações no back + gráficos (Recharts).
+- **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem. ✅
+- **M3 — Dashboard:** agregações no back + gráficos (Recharts). ← *próximo*
 - **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão.
 - **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado.
 - **M6 — Polimento:** seed de demo, README rico (prints, diagrama), testes, CI, deploy ao vivo.

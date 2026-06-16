@@ -1,9 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { App } from './App.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
+import { CategoriesPage } from './pages/CategoriesPage.tsx';
 import { HomePage } from './pages/HomePage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage.tsx';
+import { TransactionsPage } from './pages/TransactionsPage.tsx';
 
 /**
  * Rotas públicas (login/registro) e rotas protegidas sob `ProtectedRoute`.
@@ -18,7 +20,11 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <App />,
-        children: [{ index: true, element: <HomePage /> }],
+        children: [
+          { index: true, element: <HomePage /> },
+          { path: 'transactions', element: <TransactionsPage /> },
+          { path: 'categories', element: <CategoriesPage /> },
+        ],
       },
     ],
   },
