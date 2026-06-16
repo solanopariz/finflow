@@ -13,3 +13,11 @@ export function formatDate(iso: string): string {
 export function toDateInputValue(iso: string): string {
   return new Date(iso).toISOString().slice(0, 10);
 }
+
+const monthFmt = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit' });
+
+/** 'YYYY-MM' → rótulo curto, ex.: 'jun/26'. */
+export function formatMonthLabel(month: string): string {
+  const [year, m] = month.split('-').map(Number);
+  return monthFmt.format(new Date(Date.UTC(year!, (m ?? 1) - 1, 1)));
+}

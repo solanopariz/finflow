@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { App } from './App.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { CategoriesPage } from './pages/CategoriesPage.tsx';
-import { HomePage } from './pages/HomePage.tsx';
+import { DashboardPage } from './pages/DashboardPage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage.tsx';
 import { TransactionsPage } from './pages/TransactionsPage.tsx';
@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
         path: '/',
         element: <App />,
         children: [
-          { index: true, element: <HomePage /> },
+          { index: true, element: <DashboardPage /> },
           { path: 'transactions', element: <TransactionsPage /> },
           { path: 'categories', element: <CategoriesPage /> },
         ],

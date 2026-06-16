@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriesRouter } from './modules/categories/categories.routes.js';
+import { dashboardRouter } from './modules/dashboard/dashboard.routes.js';
 import { healthRouter } from './modules/health/health.routes.js';
 import { transactionsRouter } from './modules/transactions/transactions.routes.js';
 
@@ -14,3 +15,4 @@ apiRouter.use('/health', healthRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/categories', categoriesRouter);
 apiRouter.use('/transactions', transactionsRouter);
+apiRouter.use('/dashboard', dashboardRouter);

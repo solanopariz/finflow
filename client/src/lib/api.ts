@@ -250,3 +250,36 @@ export async function updateTransaction(
 export function deleteTransaction(id: string): Promise<void> {
   return apiFetch<void>(`/api/transactions/${id}`, { method: 'DELETE' });
 }
+
+// ---------------------------------------------------------------------------
+// Dashboard
+// ---------------------------------------------------------------------------
+
+export interface CategorySlice {
+  categoryId: string | null;
+  name: string;
+  color: string;
+  total: number;
+}
+
+export interface MonthlyPoint {
+  month: string;
+  income: number;
+  expense: number;
+}
+
+export interface DashboardSummary {
+  range: { from: string; to: string };
+  totals: { income: number; expense: number; balance: number };
+  byCategory: CategorySlice[];
+  monthly: MonthlyPoint[];
+  topExpenseCategories: CategorySlice[];
+}
+
+export function getDashboardSummary(range: { from?: string; to?: string } = {}): Promise<DashboardSummary> {
+  const params = new URLSearchParams();
+  if (range.from) params.set('from', range.from);
+  if (range.to) params.set('to', range.to);
+  const query = params.toString();
+  return apiFetch<DashboardSummary>(`/api/dashboard/summary${query ? `?${query}` : ''}`);
+}

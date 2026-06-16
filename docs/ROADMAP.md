@@ -4,10 +4,11 @@ Projeto carro-chefe do portfólio: **gestor de finanças pessoais com IA**.
 Demonstra full-stack completo (auth, API REST, banco relacional, dashboards, deploy) com
 um diferencial de IA (categorização automática + resumo mensal narrado).
 
-> Status atual: **M2 concluído** — CRUD de Categorias e Transações ponta a ponta. Backend: rotas
-> protegidas com posse por usuário, filtros (tipo/categoria/período), validação de tipo categoria×transação
-> e amount como número (Vitest: 23 testes). Front: páginas de Categorias e Transações (TanStack Query,
-> RHF+Zod, modais, filtros) e navegação. M0/M1 já prontos. Próximo: **M3 — Dashboard**.
+> Status atual: **M3 concluído** — Dashboard ponta a ponta. Backend: endpoint `/dashboard/summary`
+> com totais (receita/despesa/saldo), gastos por categoria, evolução mensal (série contínua) e top
+> categorias, com janela de período (Vitest: 26 testes). Front: página de Dashboard com Recharts
+> (cards, barras receita×despesa por mês, pizza por categoria, top categorias) e seletor 3/6/12 meses;
+> agora é a home. M0–M2 já prontos. Próximo: **M4 — IA + CSV**.
 
 ## Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind; React Router; TanStack Query; Recharts;
@@ -41,8 +42,8 @@ Stretch: `Account` (múltiplas carteiras) e detecção de recorrência. Ver `ser
 - **M0 — Scaffold:** `client/` + `server/`, tooling, Prisma + schema, Docker MySQL, envs, READMEs. ✅
 - **M1 — Auth ponta a ponta:** registro/login/JWT/refresh, middleware, telas + testes. ✅
 - **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem. ✅
-- **M3 — Dashboard:** agregações no back + gráficos (Recharts). ← *próximo*
-- **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão.
+- **M3 — Dashboard:** agregações no back + gráficos (Recharts). ✅
+- **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão. ← *próximo*
 - **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado.
 - **M6 — Polimento:** seed de demo, README rico (prints, diagrama), testes, CI, deploy ao vivo.
 
