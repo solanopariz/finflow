@@ -323,3 +323,59 @@ export async function bulkCreateTransactions(
     body: JSON.stringify({ transactions }),
   });
 }
+
+export function getMonthSummary(month: string): Promise<{ month: string; summary: string }> {
+  return apiFetch<{ month: string; summary: string }>('/api/ai/summary', {
+    method: 'POST',
+    body: JSON.stringify({ month }),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Orçamentos
+// ---------------------------------------------------------------------------
+
+export type BudgetStatus = 'ok' | 'warning' | 'exceeded';
+
+export interface Budget {
+  id: string;
+  categoryId: string;
+  category: { id: string; name: string; color: string } | null;
+  month: string;
+  limitAmount: number;
+  spent: number;
+  remaining: number;
+  percent: number;
+  status: BudgetStatus;
+}
+
+export interface BudgetInput {
+  categoryId: string;
+  month: string;
+  limitAmount: number;
+}
+
+export async function listBudgets(month: string): Promise<Budget[]> {
+  const { budgets } = await apiFetch<{ budgets: Budget[] }>(`/api/budgets?month=${month}`);
+  return budgets;
+}
+
+export async function createBudget(input: BudgetInput): Promise<Budget> {
+  const { budget } = await apiFetch<{ budget: Budget }>('/api/budgets', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+  return budget;
+}
+
+export async function updateBudget(id: string, limitAmount: number): Promise<Budget> {
+  const { budget } = await apiFetch<{ budget: Budget }>(`/api/budgets/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ limitAmount }),
+  });
+  return budget;
+}
+
+export function deleteBudget(id: string): Promise<void> {
+  return apiFetch<void>(`/api/budgets/${id}`, { method: 'DELETE' });
+}

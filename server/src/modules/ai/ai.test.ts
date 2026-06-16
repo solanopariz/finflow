@@ -9,8 +9,13 @@ const { aiMock, db, create } = vi.hoisted(() => {
       isAiConfigured: vi.fn(() => true),
       getAnthropic: vi.fn(() => ({ messages: { create } })),
       CATEGORIZER_MODEL: 'claude-haiku-4-5',
+      SUMMARY_MODEL: 'claude-sonnet-4-6',
     },
-    db: { category: { findMany: vi.fn() } },
+    db: {
+      category: { findMany: vi.fn() },
+      transaction: { findMany: vi.fn(), aggregate: vi.fn() },
+      budget: { findMany: vi.fn() },
+    },
   };
 });
 
@@ -82,5 +87,39 @@ describe('AI categorize', () => {
       .set('Authorization', auth)
       .send({ items: [] });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('AI summary', () => {
+  it('retorna 503 quando a IA não está configurada', async () => {
+    aiMock.isAiConfigured.mockReturnValue(false);
+    const res = await request(app)
+      .post('/api/ai/summary')
+      .set('Authorization', auth)
+      .send({ month: '2026-06' });
+    expect(res.status).toBe(503);
+  });
+
+  it('gera o resumo do mês a partir dos dados agregados', async () => {
+    db.transaction.findMany.mockResolvedValue([
+      { type: 'INCOME', amount: { toNumber: () => 5000 }, category: null },
+      {
+        type: 'EXPENSE',
+        amount: { toNumber: () => 200 },
+        category: { name: 'Mercado' },
+      },
+    ]);
+    db.budget.findMany.mockResolvedValue([]);
+    db.transaction.aggregate.mockResolvedValue({ _sum: { amount: { toNumber: () => 100 } } });
+    create.mockResolvedValue({ content: [{ type: 'text', text: 'Seu mês foi positivo.' }] });
+
+    const res = await request(app)
+      .post('/api/ai/summary')
+      .set('Authorization', auth)
+      .send({ month: '2026-06' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.month).toBe('2026-06');
+    expect(res.body.summary).toBe('Seu mês foi positivo.');
   });
 });

@@ -4,6 +4,9 @@ import { env } from '../config/env.js';
 /** Modelo de categorização: rápido e barato, via tool use para JSON confiável. */
 export const CATEGORIZER_MODEL = 'claude-haiku-4-5';
 
+/** Modelo do resumo mensal narrado: mais capaz para texto fluido. */
+export const SUMMARY_MODEL = 'claude-sonnet-4-6';
+
 let client: Anthropic | null = null;
 
 /** A IA só está disponível quando a chave da Anthropic está configurada. */
