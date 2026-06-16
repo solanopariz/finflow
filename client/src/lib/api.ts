@@ -283,3 +283,43 @@ export function getDashboardSummary(range: { from?: string; to?: string } = {}):
   const query = params.toString();
   return apiFetch<DashboardSummary>(`/api/dashboard/summary${query ? `?${query}` : ''}`);
 }
+
+// ---------------------------------------------------------------------------
+// IA (categorização) e importação
+// ---------------------------------------------------------------------------
+
+export interface CategorizationItem {
+  description: string;
+  amount: number;
+  type: CategoryType;
+}
+
+export interface CategorizationResult {
+  index: number;
+  categoryId: string | null;
+  categoryName: string | null;
+  confidence: number;
+}
+
+export function getAiStatus(): Promise<{ configured: boolean }> {
+  return apiFetch<{ configured: boolean }>('/api/ai/status');
+}
+
+export async function categorize(items: CategorizationItem[]): Promise<CategorizationResult[]> {
+  const { results } = await apiFetch<{ results: CategorizationResult[] }>('/api/ai/categorize', {
+    method: 'POST',
+    body: JSON.stringify({ items }),
+  });
+  return results;
+}
+
+export type BulkTransactionInput = TransactionInput & { source?: 'MANUAL' | 'IMPORT' | 'AI' };
+
+export async function bulkCreateTransactions(
+  transactions: BulkTransactionInput[],
+): Promise<{ count: number }> {
+  return apiFetch<{ count: number }>('/api/transactions/bulk', {
+    method: 'POST',
+    body: JSON.stringify({ transactions }),
+  });
+}

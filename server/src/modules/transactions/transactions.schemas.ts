@@ -14,6 +14,20 @@ export const createTransactionSchema = z.object({
 
 export const updateTransactionSchema = createTransactionSchema.partial();
 
+export const transactionSourceEnum = z.enum(['MANUAL', 'IMPORT', 'AI']);
+
+/** Item de importação em lote: igual ao create, com `source` opcional (padrão IMPORT). */
+export const bulkTransactionItemSchema = createTransactionSchema.extend({
+  source: transactionSourceEnum.optional(),
+});
+
+export const bulkCreateSchema = z.object({
+  transactions: z.array(bulkTransactionItemSchema).min(1).max(200),
+});
+
+export type BulkTransactionItem = z.infer<typeof bulkTransactionItemSchema>;
+export type BulkCreateInput = z.infer<typeof bulkCreateSchema>;
+
 export const listTransactionsQuerySchema = z
   .object({
     type: categoryTypeEnum.optional(),

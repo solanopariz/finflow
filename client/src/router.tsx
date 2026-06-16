@@ -3,6 +3,7 @@ import { App } from './App.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { CategoriesPage } from './pages/CategoriesPage.tsx';
 import { DashboardPage } from './pages/DashboardPage.tsx';
+import { ImportPage } from './pages/ImportPage.tsx';
 import { LoginPage } from './pages/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage.tsx';
 import { TransactionsPage } from './pages/TransactionsPage.tsx';
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
           { index: true, element: <DashboardPage /> },
           { path: 'transactions', element: <TransactionsPage /> },
           { path: 'categories', element: <CategoriesPage /> },
+          { path: 'import', element: <ImportPage /> },
         ],
       },
     ],

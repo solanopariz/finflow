@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import {
+  createManyTransactions,
   createTransaction,
   deleteTransaction,
   listTransactions,
@@ -16,6 +17,11 @@ export async function listController(req: Request, res: Response): Promise<void>
 export async function createController(req: Request, res: Response): Promise<void> {
   const transaction = await createTransaction(req.userId!, req.body);
   res.status(201).json({ transaction });
+}
+
+export async function bulkCreateController(req: Request, res: Response): Promise<void> {
+  const result = await createManyTransactions(req.userId!, req.body);
+  res.status(201).json(result);
 }
 
 export async function updateController(req: Request, res: Response): Promise<void> {

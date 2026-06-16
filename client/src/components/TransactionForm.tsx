@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import type { Category, Transaction, TransactionInput } from '../lib/api.ts';
+import { categorize, getAiStatus, type Category, type Transaction, type TransactionInput } from '../lib/api.ts';
 import { toDateInputValue } from '../lib/format.ts';
 import { FormField } from './FormField.tsx';
 
@@ -34,6 +36,7 @@ export function TransactionForm({
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
@@ -49,6 +52,27 @@ export function TransactionForm({
   // Só categorias do mesmo tipo da transação podem ser selecionadas.
   const selectedType = watch('type');
   const options = categories.filter((c) => c.type === selectedType);
+
+  const { data: aiStatus } = useQuery({ queryKey: ['ai-status'], queryFn: getAiStatus });
+  const [suggesting, setSuggesting] = useState(false);
+  const description = watch('description');
+  const amount = watch('amount');
+
+  async function suggestCategory() {
+    setSuggesting(true);
+    try {
+      const [result] = await categorize([
+        { description, amount: Number(amount), type: selectedType },
+      ]);
+      if (result?.categoryId) {
+        setValue('categoryId', result.categoryId, { shouldDirty: true });
+      }
+    } catch {
+      // Silencioso: a sugestão é opcional; o usuário pode escolher manualmente.
+    } finally {
+      setSuggesting(false);
+    }
+  }
 
   return (
     <form
@@ -98,9 +122,21 @@ export function TransactionForm({
       <FormField id="tx-date" label="Data" type="date" error={errors.date?.message} {...register('date')} />
 
       <div className="space-y-1">
-        <label htmlFor="tx-category" className="block text-sm font-medium text-slate-700">
-          Categoria
-        </label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="tx-category" className="block text-sm font-medium text-slate-700">
+            Categoria
+          </label>
+          {aiStatus?.configured && (
+            <button
+              type="button"
+              onClick={suggestCategory}
+              disabled={suggesting || !description || !amount}
+              className="text-xs font-medium text-violet-600 hover:underline disabled:opacity-50"
+            >
+              {suggesting ? 'Sugerindo…' : '✨ Sugerir com IA'}
+            </button>
+          )}
+        </div>
         <select
           id="tx-category"
           className="w-full rounded-md border border-slate-300 px-3 py-2 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"

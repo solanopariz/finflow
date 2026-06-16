@@ -5,6 +5,7 @@ const navItems = [
   { to: '/', label: 'Início', end: true },
   { to: '/transactions', label: 'Transações', end: false },
   { to: '/categories', label: 'Categorias', end: false },
+  { to: '/import', label: 'Importar', end: false },
 ];
 
 /**

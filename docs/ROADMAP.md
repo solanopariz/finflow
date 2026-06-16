@@ -4,11 +4,11 @@ Projeto carro-chefe do portfólio: **gestor de finanças pessoais com IA**.
 Demonstra full-stack completo (auth, API REST, banco relacional, dashboards, deploy) com
 um diferencial de IA (categorização automática + resumo mensal narrado).
 
-> Status atual: **M3 concluído** — Dashboard ponta a ponta. Backend: endpoint `/dashboard/summary`
-> com totais (receita/despesa/saldo), gastos por categoria, evolução mensal (série contínua) e top
-> categorias, com janela de período (Vitest: 26 testes). Front: página de Dashboard com Recharts
-> (cards, barras receita×despesa por mês, pizza por categoria, top categorias) e seletor 3/6/12 meses;
-> agora é a home. M0–M2 já prontos. Próximo: **M4 — IA + CSV**.
+> Status atual: **M4 concluído** — IA + CSV ponta a ponta. Backend: categorização via Claude Haiku 4.5
+> (tool use forçado para JSON confiável, escolhendo entre categorias existentes), endpoints `/ai/status`
+> e `/ai/categorize` (503 sem chave), e `/transactions/bulk` (Vitest: 32 testes). Front: importação de
+> CSV (upload → IA categoriza em lote → revisão editável → confirmar) e botão "Sugerir com IA" no
+> formulário; degrada com elegância sem `ANTHROPIC_API_KEY`. M0–M3 prontos. Próximo: **M5 — Orçamentos & Resumo IA**.
 
 ## Stack
 - **Frontend:** React + TypeScript + Vite + Tailwind; React Router; TanStack Query; Recharts;
@@ -43,8 +43,8 @@ Stretch: `Account` (múltiplas carteiras) e detecção de recorrência. Ver `ser
 - **M1 — Auth ponta a ponta:** registro/login/JWT/refresh, middleware, telas + testes. ✅
 - **M2 — Transações & Categorias:** API + UI de CRUD, filtros e listagem. ✅
 - **M3 — Dashboard:** agregações no back + gráficos (Recharts). ✅
-- **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão. ← *próximo*
-- **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado.
+- **M4 — IA + CSV:** categorização por IA (tool use) + importação de CSV com revisão. ✅
+- **M5 — Orçamentos & Resumo IA:** orçamentos com alertas + resumo mensal narrado. ← *próximo*
 - **M6 — Polimento:** seed de demo, README rico (prints, diagrama), testes, CI, deploy ao vivo.
 
 ## Verificação por marco

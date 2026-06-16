@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 import { HttpError } from '../../middlewares/error.middleware.js';
 import type {
+  BulkCreateInput,
   CreateTransactionInput,
   ListTransactionsQuery,
   UpdateTransactionInput,
@@ -114,6 +115,51 @@ export async function updateTransaction(
     include: { category: true },
   });
   return toDTO(tx);
+}
+
+/**
+ * Cria várias transações de uma vez (importação de CSV). Valida as categorias
+ * em memória (uma consulta) e insere tudo em lote. Retorna a quantidade criada.
+ */
+export async function createManyTransactions(
+  userId: string,
+  input: BulkCreateInput,
+): Promise<{ count: number }> {
+  const categoryIds = [
+    ...new Set(input.transactions.map((t) => t.categoryId).filter((id): id is string => !!id)),
+  ];
+
+  const categories = categoryIds.length
+    ? await prisma.category.findMany({
+        where: { id: { in: categoryIds }, userId },
+        select: { id: true, type: true },
+      })
+    : [];
+  const byId = new Map(categories.map((c) => [c.id, c]));
+
+  const data = input.transactions.map((t, i) => {
+    if (t.categoryId) {
+      const category = byId.get(t.categoryId);
+      if (!category) {
+        throw new HttpError(400, `Categoria inválida na transação ${i + 1}`);
+      }
+      if (category.type !== t.type) {
+        throw new HttpError(400, `Categoria de tipo divergente na transação ${i + 1}`);
+      }
+    }
+    return {
+      userId,
+      type: t.type,
+      amount: new Prisma.Decimal(t.amount),
+      description: t.description,
+      date: t.date,
+      categoryId: t.categoryId ?? null,
+      source: t.source ?? 'IMPORT',
+    };
+  });
+
+  const result = await prisma.transaction.createMany({ data });
+  return { count: result.count };
 }
 
 export async function deleteTransaction(userId: string, id: string): Promise<void> {

@@ -7,12 +7,14 @@ const { db } = vi.hoisted(() => ({
     transaction: {
       findMany: vi.fn(),
       create: vi.fn(),
+      createMany: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
       findFirst: vi.fn(),
     },
     category: {
       findFirst: vi.fn(),
+      findMany: vi.fn(),
     },
   },
 }));
@@ -114,5 +116,40 @@ describe('Transactions', () => {
     const res = await request(app).delete('/api/transactions/t999').set('Authorization', auth);
     expect(res.status).toBe(404);
     expect(db.transaction.delete).not.toHaveBeenCalled();
+  });
+
+  it('cria em lote (bulk) com source padrão IMPORT', async () => {
+    db.category.findMany.mockResolvedValue([{ id: 'c1', type: 'EXPENSE' }]);
+    db.transaction.createMany.mockResolvedValue({ count: 2 });
+
+    const res = await request(app)
+      .post('/api/transactions/bulk')
+      .set('Authorization', auth)
+      .send({
+        transactions: [
+          { type: 'EXPENSE', amount: 10, description: 'A', date: '2026-06-01', categoryId: 'c1', source: 'AI' },
+          { type: 'INCOME', amount: 20, description: 'B', date: '2026-06-02' },
+        ],
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.count).toBe(2);
+    const data = db.transaction.createMany.mock.calls[0]![0].data;
+    expect(data[0].source).toBe('AI');
+    expect(data[1].source).toBe('IMPORT');
+  });
+
+  it('rejeita bulk com categoria de tipo divergente (400)', async () => {
+    db.category.findMany.mockResolvedValue([{ id: 'c1', type: 'INCOME' }]);
+    const res = await request(app)
+      .post('/api/transactions/bulk')
+      .set('Authorization', auth)
+      .send({
+        transactions: [
+          { type: 'EXPENSE', amount: 10, description: 'A', date: '2026-06-01', categoryId: 'c1' },
+        ],
+      });
+    expect(res.status).toBe(400);
+    expect(db.transaction.createMany).not.toHaveBeenCalled();
   });
 });
